@@ -5,14 +5,21 @@ from bs4 import BeautifulSoup;
 
 load_dotenv();
 
-apiResponse = os.getenv("api_response_filepath");
 googleApiUrl = "https://www.googleapis.com/customsearch/v1";
 googleApiKey = os.getenv("google_api_key");
+searchEngineID = os.getenv("search_engine_id");
 
 
-def APIRequest(query:str):
-    params = {'key': googleApiKey, 'cx': 'YOUR_CSE_ID', 'q': {query}}
-    response = requests.get(googleApiUrl, params=params);
-    responseText = BeautifulSoup(response, 'html.parser').text;
-    with open(apiResponse, "w", encoding="utf-8") as file:
-        file.write(responseText);
+def SearchAPIRequest(query:str, **params):
+    base_params = {
+        'key': googleApiKey,
+        'cx': searchEngineID,
+        'q': query
+    }
+    base_params.update(params)
+    response = requests.get(googleApiUrl, params=base_params);
+    
+    return response;
+
+if __name__ == "__main__":
+    SearchAPIRequest("Днепр кафе", lang="ru", num=10);
