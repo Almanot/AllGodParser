@@ -7,13 +7,15 @@ load_dotenv();
 dbname = os.getenv("AParser_pg_dbname");
 user = os.getenv("AParser_pg_user");
 password = os.getenv("AParser_pg_password");
+table_name = os.getenv("AParser_pg_table_name");
 host = "localhost";
 
-def LoadToResultDB(result_data):
+
+def LoadResultToDB(result_data):
     db_connection = psycopg2.connect(dbname,user,password,host)
     cursor = db_connection.cursor()
-    
-    cursor.execute(result_data)
+
+    cursor.execute("INSERT INTO {table_name} (id, name, age) VALUES (%s, %s, %s)", result_data)
 
     db_connection.commit()
     cursor.close()
