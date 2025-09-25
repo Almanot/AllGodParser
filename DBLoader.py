@@ -7,7 +7,6 @@ load_dotenv();
 dbname = os.getenv("AParser_pg_dbname");
 user = os.getenv("AParser_pg_user");
 password = os.getenv("AParser_pg_password");
-table_name = os.getenv("AParser_pg_table_name");
 host = "localhost";
 
 
