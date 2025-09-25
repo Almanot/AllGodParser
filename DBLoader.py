@@ -11,11 +11,16 @@ table_name = os.getenv("AParser_pg_table_name");
 host = "localhost";
 
 
-def LoadResultToDB(result_data):
-    db_connection = psycopg2.connect(dbname,user,password,host)
+def LoadResultToTable(table_name, params: dict):
+    db_connection = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
     cursor = db_connection.cursor()
 
-    cursor.execute("INSERT INTO {table_name} (id, name, age) VALUES (%s, %s, %s)", result_data)
+    columns = ', '.join(params.keys())
+    placeholders = ', '.join(['%s'] * len(params))
+    values = tuple(params.values())
+
+    sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+    cursor.execute(sql, values)
 
     db_connection.commit()
     cursor.close()
