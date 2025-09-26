@@ -12,8 +12,8 @@ parsedAnswer_tablename = os.getenv("AParser_pg_table_name");
 
 def NewSearch(query):
     response = GoogleApi.SearchAPIRequest(query, lang="uk", num=10);
-    DBLoader.LoadResultToDB(response.json());
+    DBLoader.LoadResultToTable(rawanswer_tablename, response.json());
 
 if __name__ == "__main__":
-    query = input("Enter search query: ");
+    query = input("Enter search query: ").encode('utf-8', "ignore").decode('utf-8');
     NewSearch(query);
