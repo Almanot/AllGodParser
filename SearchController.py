@@ -14,8 +14,9 @@ def NewSearch(query):
     response = GoogleApi.SearchAPIRequest(query, lang="uk", num=10);
 
     # Loading raw anwser to DB
-    # In reason of big size data with unexpected structure and markups, loding is done in two steps, where answer loaded separately, to prevent errors.
-    # first step creating a row with id, query and userid.
-    rowdata: dict = {"query": query, "userid": 1};
+    rowdata: dict = {"query": query, "userid": 1, "answer":response.json()};
     DBLoader.LoadResultToTable(rawanswer_tablename, rowdata);
-    DBLoader.LoadResultToTable(rawanswer_tablename, {"answer": response.json()});
+
+if __name__ == "__main__":
+    query = input("Enter the search query: ");
+    NewSearch(query);
