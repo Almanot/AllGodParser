@@ -2,6 +2,8 @@ import requests;
 import os;
 from dotenv import load_dotenv;
 from bs4 import BeautifulSoup;
+from unittest.mock import Mock;
+import json;
 
 load_dotenv();
 
@@ -22,3 +24,11 @@ def SearchAPIRequest(query:str, **params):
     if response.status_code != 200:
         print(f"Error: {response.status_code} - {response.text}");
     return response;
+
+# mock version
+def SearchAPIRequest(query:str, **params):
+    # mock
+    mockresponse = Mock();
+    with open("query_Швабра купить Днепр.json", "r", encoding="utf-8") as file:
+        mockresponse.json.return_value = json.load(file);
+    return mockresponse;

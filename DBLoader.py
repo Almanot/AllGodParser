@@ -1,13 +1,15 @@
 import psycopg2
 import os
 from dotenv import load_dotenv;
+import psycopg2.extras
+import json
 
 load_dotenv();
 
 dbname = os.getenv("AParser_pg_dbname");
 user = os.getenv("AParser_pg_user");
 password = os.getenv("AParser_pg_password");
-host = "localhost";
+host = os.getenv("AParser_pg_host");
 
 
 def LoadResultToTable(table_name, params: dict):
@@ -19,9 +21,14 @@ def LoadResultToTable(table_name, params: dict):
 
     columns = ', '.join(params.keys())
     placeholders = ', '.join(['%s'] * len(params))
-    values = tuple(params.values())
+    values = tuple(
+        psycopg2.extras.Json(v, dumps=lambda x: json.dumps(x, ensure_ascii=False))
+        if isinstance(v, (dict, list)) else v
+        for v in params.values()
+    )
 
-    sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+    sql:str = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+    query = "INSERT INTO ggl_searchapi_answers (query, userid, answer) VALUES (%s, %s, %s)"
     cursor.execute(sql, values)
 
     print(f"Data inserted into {table_name} table successfully.")
