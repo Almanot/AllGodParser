@@ -11,6 +11,7 @@ searchEngineID = os.getenv("search_engine_id");
 
 
 def SearchAPIRequest(query:str, **params):
+    print(f"Searching for '{query}'");
     base_params = {
         'key': googleApiKey,
         'cx': searchEngineID,
@@ -18,8 +19,6 @@ def SearchAPIRequest(query:str, **params):
     }
     base_params.update(params)
     response = requests.get(googleApiUrl, params=base_params);
-    
+    if response.status_code != 200:
+        print(f"Error: {response.status_code} - {response.text}");
     return response;
-
-if __name__ == "__main__":
-    SearchAPIRequest("Днепр кафе", lang="ru", num=10);

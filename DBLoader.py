@@ -13,6 +13,9 @@ host = "localhost";
 def LoadResultToTable(table_name, params: dict):
     db_connection = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
     cursor = db_connection.cursor()
+    if cursor is None:
+        print("Error: Unable to connect to the database.")
+        return
 
     columns = ', '.join(params.keys())
     placeholders = ', '.join(['%s'] * len(params))
@@ -20,6 +23,8 @@ def LoadResultToTable(table_name, params: dict):
 
     sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
     cursor.execute(sql, values)
+
+    print(f"Data inserted into {table_name} table successfully.")
 
     db_connection.commit()
     cursor.close()
